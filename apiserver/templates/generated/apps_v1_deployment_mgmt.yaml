@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    api: mgmt
+    apiserver: "true"
+  name: mgmt
+  namespace: '{{ .Release.Namespace }}'
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      api: mgmt
+      apiserver: "true"
+  template:
+    metadata:
+      labels:
+        api: mgmt
+        apiserver: "true"
+    spec:
+      containers:
+      - args:
+        - --etcd-servers=http://etcd-svc:2379
+        - --tls-cert-file=/apiserver.local.config/certificates/tls.crt
+        - --tls-private-key-file=/apiserver.local.config/certificates/tls.key
+        - --audit-log-path=-
+        - --audit-log-maxage=0
+        - --audit-log-maxbackup=0
+        command:
+        - ./apiserver
+        image: '{{.Values.registry}}/platform/axyom-apiserver:{{.Values.release}}'
+        imagePullPolicy: '{{ .Values.imagePullPolicy }}'
+        name: apiserver
+        resources:
+          limits:
+            cpu: 100m
+          requests:
+            cpu: 100m
+        volumeMounts:
+        - mountPath: /apiserver.local.config/certificates
+          name: apiserver-certs
+          readOnly: true
+      volumes:
+      - name: apiserver-certs
+        secret:
+          secretName: mgmt

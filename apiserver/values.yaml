@@ -1,0 +1,3 @@
+registry: 228078468156.dkr.ecr.us-east-2.amazonaws.com/5gc
+release: 6.0.0
+imagePullPolicy: IfNotPresent

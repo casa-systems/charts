@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    api: mgmt
+    apiserver: "true"
+  name: mgmt
+  namespace: '{{ .Release.Namespace }}'
+spec:
+  ports:
+  - port: 443
+    protocol: TCP
+    targetPort: 443
+  selector:
+    api: mgmt
+    apiserver: "true"
